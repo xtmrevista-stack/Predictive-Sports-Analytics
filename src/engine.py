@@ -10,7 +10,7 @@ def calcular_ied(precision, ruido, progreso_evento):
     return round((1.0 - precision) + (ruido * 0.4) - (progreso_evento * 0.3), 4)
 
 def procesar_mercado_caliente():
-    # Estructura basada en los datos de telemetría de tus capturas
+    # Estructura basada en los datos de telemetría reales de tus capturas
     eventos = [
         {
             "competidor": "MAVERICK MCNEALY", 
