@@ -3,195 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Predictivo - Monitor de Entropía</title>
+    <title>Predictive Sports Analytics</title>
     <style>
+        /* Paleta de colores inspirada en DataGolf y entornos de analítica oscura */
         body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #11141a;
+            color: #e2e8f0;
             margin: 0;
-            padding: 40px;
+            padding: 0;
         }
-        .container {
-            max-width: 1100px;
+
+        /* Título Principal solicitado en Blanco */
+        .header-banner {
+            background-color: #1a1f2c;
+            border-bottom: 1px solid #2d3748;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-banner h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .live-indicator {
+            background-color: #e53e3e;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Contenedor de la Tabla de Analítica */
+        .main-container {
+            padding: 30px 40px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-        header {
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        h1 {
-            color: #f0f6fc;
-            margin: 0 0 10px 0;
-            font-size: 28px;
-            font-weight: 500;
-        }
-        h1 span {
-            color: #deff9a;
-        }
-        .subtitle {
-            color: #8b949e;
-            margin: 0;
+
+        .section-title {
             font-size: 16px;
+            color: #a0aec0;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
+
+        .stats-table-container {
+            background-color: #161b26;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 24px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #21262d;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-        }
-        .competidor {
-            color: #f0f6fc;
-            font-size: 18px;
+
+        th {
+            background-color: #1f2635;
+            color: #cbd5e0;
             font-weight: 600;
-            margin: 0;
-        }
-        .badge {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        .badge-stable {
-            background-color: rgba(56, 139, 253, 0.15);
-            color: #58a6ff;
-            border: 1px solid rgba(56, 139, 253, 0.4);
-        }
-        .badge-volatile {
-            background-color: rgba(240, 136, 62, 0.15);
-            color: #f0883e;
-            border: 1px solid rgba(240, 136, 62, 0.4);
-        }
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        .metric-label {
-            color: #8b949e;
-        }
-        .metric-value {
-            color: #f0f6fc;
-            font-weight: 500;
-        }
-        .metric-value.highlight {
-            color: #deff9a;
-            font-weight: 600;
-        }
-        .footer-time {
+            padding: 12px 16px;
+            border-bottom: 1px solid #2d3748;
+            text-transform: uppercase;
             font-size: 11px;
-            color: #8b949e;
-            margin-top: 15px;
-            text-align: right;
-            border-top: 1px dashed #21262d;
-            padding-top: 8px;
+            letter-spacing: 0.5px;
         }
-        .error-card {
-            grid-column: 1 / -1;
-            background-color: rgba(248, 81, 73, 0.1);
-            border: 1px solid rgba(248, 81, 73, 0.4);
-            color: #f85149;
-            padding: 20px;
-            border-radius: 6px;
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #1f2635;
+            color: #e2e8f0;
+        }
+
+        tr:hover {
+            background-color: #1e2536;
+        }
+
+        /* Estilizado de nombres de jugadores */
+        .player-name {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Bloques de métricas condicionales (Muted Green / Muted Red) */
+        .metric-positive {
+            background-color: rgba(72, 187, 120, 0.15);
+            color: #48bb78;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .metric-negative {
+            background-color: rgba(245, 101, 101, 0.15);
+            color: #f56565;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .metric-neutral {
+            color: #a0aec0;
+            text-align: center;
+        }
+
+        /* Sección de telemetría y seguimiento en vivo solicitada */
+        .telemetry-cell {
+            color: #cbd5e0;
+            font-size: 12px;
+            background-color: #1a202c;
+        }
+
+        /* Resaltado de tus índices propios al final de la fila */
+        .entropy-index {
+            font-weight: bold;
+            color: #3182ce; /* Azul analítico para tus modelos */
+            text-align: center;
+        }
+
+        .ev-index {
+            font-weight: bold;
+            color: #ecc94b; /* Dorado para Valor Esperado ventajoso */
             text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Monitor de <span>Baja Entropía</span></h1>
-        <p class="subtitle">Análisis probabilístico ex-ante para la estabilización de inversiones deportivas</p>
-    </header>
-
-    <div class="grid" id="dashboard-grid">
-        <div class="card" style="grid-column: 1/-1; text-align: center;">Cargando métricas en tiempo real...</div>
+    <div class="header-banner">
+        <h1>Predictive Sports Analytics</h1>
+        <div class="live-indicator">● Live Stats</div>
     </div>
-</div>
 
-<script>
-    async function cargarMétricas() {
-        const contenedor = document.getElementById('dashboard-grid');
-        // Usamos una ruta relativa estricta para evitar bloqueos del navegador
-        const urlData = './data/state.json';
+    <div class="main-container">
+        <div class="section-title">Torneo en Desarrollo: Monitoreo de Baja Entropía</div>
         
-        try {
-            const respuesta = await fetch(urlData, { cache: "no-store" });
-            if (!respuesta.ok) throw new Error("No se pudo obtener el archivo de datos");
-            
-            const datos = await respuesta.json();
-            
-            if (!datos || datos.length === 0) {
-                contenedor.innerHTML = `
-                    <div class="error-card">
-                        Sincronización inicial exitosa. Esperando datos del próximo ciclo del motor analítico.
-                    </div>`;
-                return;
-            }
-
-            contenedor.innerHTML = '';
-
-            datos.forEach(item => {
-                const esEstable = item.ied < 0.25;
-                const claseBadge = esEstable ? 'badge-stable' : 'badge-volatile';
-                
-                const card = `
-                    <div class="card">
-                        <div class="card-header">
-                            <p class="competidor">${item.competidor}</p>
-                            <span class="badge ${claseBadge}">${item.condicion}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Índice Entropía Dinámica (IED):</span>
-                            <span class="metric-value">${item.ied}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Probabilidad Teórica Proyectada:</span>
-                            <span class="metric-value">${item.probabilidad_teorica_pct}%</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Momio en Mercado:</span>
-                            <span class="metric-value">x${item.momio}</span>
-                        </div>
-                        <div class="metric-row">
-                            <span class="metric-label">Valor Esperado (EV+):</span>
-                            <span class="metric-value highlight">${item.valor_esperado}</span>
-                        </div>
-                        <div class="footer-time">
-                            Telemetría: ${item.timestamp}
-                        </div>
-                    </div>
-                `;
-                contenedor.innerHTML += card;
-            });
-        } catch (error) {
-            console.error("Error al sincronizar el estado analítico:", error);
-            contenedor.innerHTML = `
-                <div class="error-card">
-                    <strong>Aviso del sistema:</strong> Monitoreo activo. Esperando que concluya el despliegue automático de GitHub Actions (puede demorar 1-2 minutos).
-                </div>
-            `;
-        }
-    }
-
-    window.onload = cargarMétricas;
-</script>
+        <div class="stats-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Jugador</th>
+                        <th>R2 Score</th>
+                        <th>SG: Putt</th>
+                        <th>SG: ARG</th>
+                        <th>SG: APP</th>
+                        <th>SG: T2G</th>
+                        <th style="background-color: #1a202c;">Hora (Local)</th>
+                        <th style="background-color: #1a202c;">Hoyo Actual</th>
+                        <th style="background-color: #1a202c;">Tiros Restantes</th>
+                        <th style="text-align: center;">Índice Entropía (IED)</th>
+                        <th style="text-align: center;">Valor Esperado (EV+)</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-data">
+                    <tr>
+                        <td>T1</td>
+                        <td class="player-name">MAVERICK MCNEALY</td>
+                        <td class="metric-negative">-4</td>
+                        <td><div class="metric-positive">+0.35</div></td>
+                        <td><div class="metric-positive">+1.56</div></td>
+                        <td><div class="metric-positive">+3.16</div></td>
+                        <td><div class="metric-positive">+5.26</div></td>
+                        <td class="telemetry-cell">2:00 pm</td>
+                        <td class="telemetry-cell">Hoyo 18</td>
+                        <td class="telemetry-cell">2 para terminar</td>
+                        <td class="entropy-index">-0.23 <br><small style="color:#48bb78;">Estable</small></td>
+                        <td class="ev-index">1.38</td>
+                    </tr>
+                    <tr>
+                        <td>T3</td>
+                        <td class="player-name">ALDRICH POTGIETER</td>
+                        <td class="metric-negative">-3</td>
+                        <td><div class="metric-positive">+0.40</div></td>
+                        <td><div class="metric-positive">+0.48</div></td>
+                        <td><div class="metric-positive">+0.74</div></td>
+                        <td><div class="metric-positive">+2.21</div></td>
+                        <td class="telemetry-cell">2:12 pm</td>
+                        <td class="telemetry-cell">Hoyo 17</td>
+                        <td class="telemetry-cell">3 para terminar</td>
+                        <td class="entropy-index" style="color: #e53e3e;">0.27 <br><small style="color:#e53e3e;">Volátil</small></td>
+                        <td class="ev-index">1.61</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
 </html>
