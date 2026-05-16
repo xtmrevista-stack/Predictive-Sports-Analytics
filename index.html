@@ -101,6 +101,15 @@
             border-top: 1px dashed #21262d;
             padding-top: 8px;
         }
+        .error-card {
+            grid-column: 1 / -1;
+            background-color: rgba(248, 81, 73, 0.1);
+            border: 1px solid rgba(248, 81, 73, 0.4);
+            color: #f85149;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -112,16 +121,30 @@
     </header>
 
     <div class="grid" id="dashboard-grid">
-        </div>
+        <div class="card" style="grid-column: 1/-1; text-align: center;">Cargando métricas en tiempo real...</div>
+    </div>
 </div>
 
 <script>
     async function cargarMétricas() {
+        const contenedor = document.getElementById('dashboard-grid');
+        // Usamos una ruta relativa estricta para evitar bloqueos del navegador
+        const urlData = './data/state.json';
+        
         try {
-            // Lee el JSON directamente desde su ubicación en la carpeta data
-            const respuesta = await fetch('data/state.json');
+            const respuesta = await fetch(urlData, { cache: "no-store" });
+            if (!respuesta.ok) throw new Error("No se pudo obtener el archivo de datos");
+            
             const datos = await respuesta.json();
-            const contenedor = document.getElementById('dashboard-grid');
+            
+            if (!datos || datos.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="error-card">
+                        Sincronización inicial exitosa. Esperando datos del próximo ciclo del motor analítico.
+                    </div>`;
+                return;
+            }
+
             contenedor.innerHTML = '';
 
             datos.forEach(item => {
@@ -159,9 +182,9 @@
             });
         } catch (error) {
             console.error("Error al sincronizar el estado analítico:", error);
-            document.getElementById('dashboard-grid').innerHTML = `
-                <div class="card" style="grid-column: 1/-1; text-align: center; color: #f85149;">
-                    Esperando la primera ejecución automática del motor de Python para generar data/state.json.
+            contenedor.innerHTML = `
+                <div class="error-card">
+                    <strong>Aviso del sistema:</strong> Monitoreo activo. Esperando que concluya el despliegue automático de GitHub Actions (puede demorar 1-2 minutos).
                 </div>
             `;
         }
