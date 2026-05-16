@@ -11,13 +11,12 @@ def calcular_ied(precision, ruido, progreso_evento):
 
 def procesar_mercado_caliente():
     # Estructura basada en los datos de telemetría de tus capturas
-    # Refleja el colapso de incertidumbre en el PGA Championship 2026
     eventos = [
         {
             "competidor": "MAVERICK MCNEALY", 
             "precision_tiro": 0.95, 
             "ruido_drift": 0.05, 
-            "progreso": 1.0,  # 2da ronda consolidada
+            "progreso": 1.0,
             "momio_apuesta": 1.12
         },
         {
@@ -39,11 +38,9 @@ def procesar_mercado_caliente():
     estado_procesado = []
     for ev in eventos:
         ied = calcular_ied(ev['precision_tiro'], ev['ruido_drift'], ev['progreso'])
-        # Probabilidad Proyectada Teórica (PPT) basada en la neguentropía
         ppt = round((1.0 - ied) * 100, 2)
         if ppt < 1.0: ppt = 1.0
         
-        # Valor Esperado (EV) -> Si es mayor a 1.0, hay ventaja sobre la casa
         valor_esperado = round((ppt * ev['momio_apuesta']) / 100, 2)
         
         estado_procesado.append({
@@ -56,10 +53,9 @@ def procesar_mercado_caliente():
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
         
-    return estado_processed
+    return estado_procesado
 
 if __name__ == "__main__":
-    # Asegurar que el directorio data exista si se corre localmente
     if not os.path.exists('data'):
         os.makedirs('data')
         
