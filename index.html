@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Predictivo - Monitor de Entropía</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #f0f6fc;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 500;
+        }
+        h1 span {
+            color: #deff9a;
+        }
+        .subtitle {
+            color: #8b949e;
+            margin: 0;
+            font-size: 16px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 24px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .competidor {
+            color: #f0f6fc;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .badge-stable {
+            background-color: rgba(56, 139, 253, 0.15);
+            color: #58a6ff;
+            border: 1px solid rgba(56, 139, 253, 0.4);
+        }
+        .badge-volatile {
+            background-color: rgba(240, 136, 62, 0.15);
+            color: #f0883e;
+            border: 1px solid rgba(240, 136, 62, 0.4);
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .metric-label {
+            color: #8b949e;
+        }
+        .metric-value {
+            color: #f0f6fc;
+            font-weight: 500;
+        }
+        .metric-value.highlight {
+            color: #deff9a;
+            font-weight: 600;
+        }
+        .footer-time {
+            font-size: 11px;
+            color: #8b949e;
+            margin-top: 15px;
+            text-align: right;
+            border-top: 1px dashed #21262d;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Monitor de <span>Baja Entropía</span></h1>
+        <p class="subtitle">Análisis probabilístico ex-ante para la estabilización de inversiones deportivas</p>
+    </header>
+
+    <div class="grid" id="dashboard-grid">
+        </div>
+</div>
+
+<script>
+    async function cargarMétricas() {
+        try {
+            // RUTA AJUSTADA: Ahora busca directamente en la carpeta data desde la raíz
+            const respuesta = await fetch('data/state.json');
+            const datos = await respuesta.json();
+            const contenedor = document.getElementById('dashboard-grid');
+            contenedor.innerHTML = '';
+
+            datos.forEach(item => {
+                const esEstable = item.ied < 0.25;
+                const claseBadge = esEstable ? 'badge-stable' : 'badge-volatile';
+                
+                const card = `
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="competidor">${item.competidor}</p>
+                            <span class="badge ${claseBadge}">${item.condicion}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Índice Entropía Dinámica (IED):</span>
+                            <span class="metric-value">${item.ied}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Probabilidad Teórica Proyectada:</span>
+                            <span class="metric-value">${item.probabilidad_teorica_pct}%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Momio en Mercado:</span>
+                            <span class="metric-value">x${item.momio}</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Valor Esperado (EV+):</span>
+                            <span class="metric-value highlight">${item.valor_esperado}</span>
+                        </div>
+                        <div class="footer-time">
+                            Telemetría: ${item.timestamp}
+                        </div>
+                    </div>
+                `;
+                contenedor.innerHTML += card;
+            });
+        } catch (error) {
+            console.error("Error al sincronizar el estado analítico:", error);
+            document.getElementById('dashboard-grid').innerHTML = `
+                <div class="card" style="grid-column: 1/-1; text-align: center; color: #f85149;">
+                    Error al cargar los datos. Esperando la primera ejecución del bot de Python en /data/state.json.
+                </div>
+            `;
+        }
+    }
+
+    window.onload = cargarMétricas;
+</script>
+
+</body>
+</html>
