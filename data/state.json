@@ -1,1 +1,29 @@
-[]
+[
+    {
+        "competidor": "MAVERICK MCNEALY",
+        "ied": -0.23,
+        "probabilidad_teorica_pct": 123.0,
+        "momio": 1.12,
+        "valor_esperado": 1.38,
+        "condicion": "Estable (Baja Entropía)",
+        "timestamp": "2026-05-16 01:42:06"
+    },
+    {
+        "competidor": "ALDRICH POTGIETER",
+        "ied": 0.27,
+        "probabilidad_teorica_pct": 73.0,
+        "momio": 2.2,
+        "valor_esperado": 1.61,
+        "condicion": "Volátil",
+        "timestamp": "2026-05-16 01:42:06"
+    },
+    {
+        "competidor": "MIN WOO LEE",
+        "ied": 0.31,
+        "probabilidad_teorica_pct": 69.0,
+        "momio": 17.0,
+        "valor_esperado": 11.73,
+        "condicion": "Volátil",
+        "timestamp": "2026-05-16 01:42:06"
+    }
+]
