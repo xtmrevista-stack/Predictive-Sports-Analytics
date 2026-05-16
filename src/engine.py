@@ -3,14 +3,9 @@ import os
 from datetime import datetime
 
 def calcular_ied(precision, ruido, progreso_evento):
-    """
-    Calcula el Índice de Entropía Dinámica (IED).
-    Un IED bajo (cercano a 0.0) significa certeza y estabilidad matemática.
-    """
     return round((1.0 - precision) + (ruido * 0.4) - (progreso_evento * 0.3), 4)
 
 def procesar_mercado_caliente():
-    # Estructura basada en los datos de telemetría reales de tus capturas
     eventos = [
         {
             "competidor": "MAVERICK MCNEALY", 
